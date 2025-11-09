@@ -1,0 +1,68 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    int pid[n], at[n], bt[n], rt[n], wt[n], tat[n], ct[n];
+    
+    for(int i = 0; i < n; i++) {
+        pid[i] = i + 1;
+        cout << "Enter Arrival Time for P" << pid[i] << ": ";
+        cin >> at[i];
+        cout << "Enter Burst Time for P" << pid[i] << ": ";
+        cin >> bt[i];
+        rt[i] = bt[i];   // Remaining time initially equals burst time
+    }
+
+    int tq;
+    cout << "Enter Time Quantum: ";
+    cin >> tq;
+
+    int time = 0, completed = 0;
+    
+    while(completed < n) {
+        bool executed = false;
+        
+        for(int i = 0; i < n; i++) {
+            if(at[i] <= time && rt[i] > 0) {
+                executed = true;
+
+                if(rt[i] > tq) {
+                    time += tq;
+                    rt[i] -= tq;
+                }
+                else {
+                    time += rt[i];
+                    rt[i] = 0;
+                    completed++;
+                    
+                    ct[i] = time;
+                    tat[i] = ct[i] - at[i];
+                    wt[i] = tat[i] - bt[i];
+                }
+            }
+        }
+
+        if(!executed) { // CPU idle
+            time++;
+        }
+    }
+
+    // Display results
+    float avgWT = 0, avgTAT = 0;
+    cout << "\nPID\tAT\tBT\tWT\tTAT\tCT\n";
+    for(int i = 0; i < n; i++) {
+        cout << "P" << pid[i] << "\t" << at[i] << "\t" << bt[i]
+             << "\t" << wt[i] << "\t" << tat[i] << "\t" << ct[i] << endl;
+        avgWT += wt[i];
+        avgTAT += tat[i];
+    }
+
+    cout << "\nAverage Waiting Time: " << avgWT / n;
+    cout << "\nAverage Turnaround Time: " << avgTAT / n << endl;
+
+    return 0;
+}

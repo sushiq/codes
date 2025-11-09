@@ -1,0 +1,48 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    int pid[n], at[n], bt[n], ct[n], tat[n], wt[n];
+
+    
+    for(int i = 0; i < n; i++) {
+        pid[i] = i + 1;
+        cout << "Enter Arrival Time for P" << pid[i] << ": ";
+        cin >> at[i];
+        cout << "Enter Burst Time for P" << pid[i] << ": ";
+        cin >> bt[i];
+    }
+
+    int currentTime = 0;
+
+    // FCFS Scheduling Logic
+    for(int i = 0; i < n; i++) {
+        if(currentTime < at[i]) {
+            currentTime = at[i]; 
+        }
+        currentTime += bt[i];
+        ct[i] = currentTime;      
+        tat[i] = ct[i] - at[i];  
+        wt[i] = tat[i] - bt[i];  
+    }
+
+    
+    float avgWT = 0, avgTAT = 0;
+    cout << "\nPID\tAT\tBT\tWT\tTAT\tCT" << endl;
+    for(int i = 0; i < n; i++) {
+        cout << "P" << pid[i] << "\t" << at[i] << "\t" << bt[i]
+             << "\t" << wt[i] << "\t" << tat[i] << "\t" << ct[i] << endl;
+        avgWT += wt[i];
+        avgTAT += tat[i];
+    }
+
+ 
+    cout << "\nAverage Waiting Time: " << avgWT / n << endl;
+    cout << "Average Turnaround Time: " << avgTAT / n << endl;
+
+    return 0;
+}

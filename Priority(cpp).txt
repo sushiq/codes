@@ -1,0 +1,68 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    int pid[n], at[n], bt[n], pr[n], wt[n], tat[n], ct[n];
+    bool done[n] = {false};
+
+    
+    for (int i = 0; i < n; i++) {
+        pid[i] = i + 1;
+        cout << "Enter Arrival Time for Process " << pid[i] << ": ";
+        cin >> at[i];
+        cout << "Enter Burst Time for Process " << pid[i] << ": ";
+        cin >> bt[i];
+        cout << "Enter Priority for Process " << pid[i] 
+             << " (lower number = higher priority): ";
+        cin >> pr[i];
+    }
+
+    int time = 0, completed = 0;
+    float totalWT = 0, totalTAT = 0;
+
+  
+    while (completed < n) {
+        int highestPriority = -1;
+        int minPriority = 999999;
+
+        
+        for (int i = 0; i < n; i++) {
+            if (!done[i] && at[i] <= time && pr[i] < minPriority) {
+                minPriority = pr[i];
+                highestPriority = i;
+            }
+        }
+
+        if (highestPriority == -1) {
+            time++; // CPU idle
+            continue;
+        }
+
+      
+        time += bt[highestPriority];
+        ct[highestPriority] = time;
+        tat[highestPriority] = ct[highestPriority] - at[highestPriority];
+        wt[highestPriority] = tat[highestPriority] - bt[highestPriority];
+
+        totalWT += wt[highestPriority];
+        totalTAT += tat[highestPriority];
+        done[highestPriority] = true;
+        completed++;
+    }
+
+ 
+    cout << "\nPID\tAT\tBT\tPR\tWT\tTAT\tCT\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << pid[i] << "\t" << at[i] << "\t" << bt[i] << "\t" << pr[i]
+             << "\t" << wt[i] << "\t" << tat[i] << "\t" << ct[i] << endl;
+    }
+
+    cout << "\nAverage Waiting Time: " << (totalWT / n);
+    cout << "\nAverage Turnaround Time: " << (totalTAT / n) << endl;
+
+    return 0;
+}
