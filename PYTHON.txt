@@ -1,0 +1,64 @@
+import tkinter as tk
+
+# Function to handle button clicks
+def click(event):
+    text = event.widget.cget("text")
+
+    if text == "=":
+        try:
+            result = eval(screen.get())
+            screen_var.set(result)
+        except Exception:
+            screen_var.set("Error")
+    elif text == "C":
+        screen_var.set("")
+    else:
+        screen_var.set(screen_var.get() + text)
+
+# Create main window
+root = tk.Tk()
+root.title("Simple Calculator")
+root.geometry("300x400")
+root.config(bg="#1e1e1e")
+
+# StringVar for the screen
+screen_var = tk.StringVar()
+
+# Entry widget for display
+screen = tk.Entry(root, textvar=screen_var, font="Arial 20",
+                  bg="#d9d9d9", bd=8, relief="sunken", justify="right")
+screen.pack(fill="x", ipadx=8, pady=10, padx=10)
+
+# Button frame
+frame = tk.Frame(root, bg="#1e1e1e")
+frame.pack()
+
+# Buttons layout
+buttons = [
+    ["7", "8", "9", "/"],
+    ["4", "5", "6", "*"],
+    ["1", "2", "3", "-"],
+    ["0", ".", "C", "+"],
+    ["="]
+]
+
+# Create and place buttons
+for row in buttons:
+    row_frame = tk.Frame(frame, bg="#1e1e1e")
+    row_frame.pack()
+
+    for btn_text in row:
+        button = tk.Button(
+            row_frame,
+            text=btn_text,
+            font="Arial 18",
+            width=5,
+            height=1,
+            bg="#2e2e2e",
+            fg="white",
+            activebackground="#3e3e3e"
+        )
+        button.pack(side="left", padx=5, pady=5)
+        button.bind("<Button-1>", click)
+
+root.mainloop()
